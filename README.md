@@ -6,6 +6,11 @@ This is a fairly simple little script that adds graphs to the bottom of your mud
 It also updates whenever you send input to the mud, to try to keep the graphs as accurate as possible.
 
 
+Installation Instructions
+-------------------------
+The easiest way to install this script is just to click the "Zip" button on this page, then import it via mudlet's package manager.
+
+
 Known Bugs
 ----------
 
