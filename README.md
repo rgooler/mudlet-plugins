@@ -1,20 +1,9 @@
-Discworld Bottomgraphs
-======================
+Mudlet Scripts
+==============
 
-This is a fairly simple little script that adds graphs to the bottom of your mudlet window, updating your health, gp, and xp.
+This is where I keep all my Mudlet scripts. 
 
-It also updates whenever you send input to the mud, to try to keep the graphs as accurate as possible.
-
-
-Installation Instructions
--------------------------
-The easiest way to install this script is just to click the "Zip" button on this page, then import it via mudlet's package manager.
-
-
-Known Bugs
-----------
-
-When you resize the window, the graphs don't move to stay where you expect them to be.
+The are organized by MUD I created them for.
 
 
 Copyright and license
