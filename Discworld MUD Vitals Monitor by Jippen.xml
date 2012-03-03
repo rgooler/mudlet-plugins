@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.0">
+    <TriggerPackage>
+        <Trigger isActive="yes" isFolder="no" isTempTrigger="no" isMultiline="no" isPerlSlashGOption="no" isColorizerTrigger="no" isFilterTrigger="no" isSoundTrigger="no" isColorTrigger="no" isColorTriggerFg="no" isColorTriggerBg="no">
+            <name>jippen.discworld.vitals.monitor</name>
+            <script>HP    = matches[2]
+maxHP = matches[3]
+GP    = matches[4]
+maxGP = matches[5]
+XP    = matches[6]
+
+jippen.discworld.vitals:update(HP,maxHP,GP,maxGP,XP)</script>
+            <triggerType>0</triggerType>
+            <conditonLineDelta>0</conditonLineDelta>
+            <mStayOpen>0</mStayOpen>
+            <mCommand></mCommand>
+            <packageName></packageName>
+            <mFgColor>#ff0000</mFgColor>
+            <mBgColor>#ffff00</mBgColor>
+            <mSoundFile></mSoundFile>
+            <colorTriggerFgColor>#000000</colorTriggerFgColor>
+            <colorTriggerBgColor>#000000</colorTriggerBgColor>
+            <regexCodeList>
+                <string>Hp:[ ]+(\d+) ?\((\d+)\)[ ]+Gp:[ ]+(\d+) ?\((\d+)\)[ ]+Xp:[ ]+(\d+)</string>
+            </regexCodeList>
+            <regexCodePropertyList>
+                <integer>1</integer>
+            </regexCodePropertyList>
+        </Trigger>
+    </TriggerPackage>
+    <ScriptPackage>
+        <ScriptGroup isActive="yes" isFolder="yes">
+            <name>jippen</name>
+            <packageName></packageName>
+            <script>--Initilize stuff we will be using soonish.
+jippen = jippen or {}</script>
+            <eventHandlerList/>
+            <ScriptGroup isActive="yes" isFolder="yes">
+                <name>discworld</name>
+                <packageName></packageName>
+                <script>--Initilize stuff we will be using soonish.
+jippen = jippen or {}
+jippen.discworld = jippen.discworld or {}</script>
+                <eventHandlerList/>
+                <ScriptGroup isActive="yes" isFolder="yes">
+                    <name>vitals</name>
+                    <packageName></packageName>
+                    <script>--Initilize stuff we will be using soonish.
+jippen = jippen or {}
+jippen.discworld = jippen.discworld or {}
+jippen.discworld.vitals = jippen.discworld.vitals or {}</script>
+                    <eventHandlerList/>
+                    <Script isActive="yes" isFolder="no">
+                        <name>config</name>
+                        <packageName></packageName>
+                        <script>--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
+--                 Configuration area                  --
+-- Please configure this area to work however you like --
+-- This is probably the only area you should modify    --
+--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~--
+
+--[[ Basic Options ]] --
+
+--Is this script enabled?
+jippen.discworld.vitals.enabled = true
+
+
+-- Do you want the bars on the 'top' or 'bottom' of the screen? ]]
+jippen.discworld.vitals.location = &quot;bottom&quot;
+
+
+--[[ Formatting ]] --
+
+--Height of pixels in bars
+jippen.discworld.vitals.height = 20
+
+--Space in pixels between bars
+jippen.discworld.vitals.spacer = 2
+
+--Width in pixels of XP Bar
+jippen.discworld.vitals.xpbar = 150
+
+
+--Bar Colors
+jippen.discworld.vitals.HPcolor = &quot;red&quot;
+jippen.discworld.vitals.GPcolor = &quot;cyan&quot;
+jippen.discworld.vitals.XPcolor = &quot;green&quot;</script>
+                        <eventHandlerList/>
+                    </Script>
+                    <ScriptGroup isActive="yes" isFolder="yes">
+                        <name>code - Do Not Touch</name>
+                        <packageName></packageName>
+                        <script></script>
+                        <eventHandlerList/>
+                        <Script isActive="yes" isFolder="no">
+                            <name>:update(HP,maxHP,GP,maxGP,XP)</name>
+                            <packageName></packageName>
+                            <script>-------------------------------------------------------------------------------
+--      Do not modify this without knowing full well what you are doing      --
+-------------------------------------------------------------------------------
+
+--Easy update function
+function jippen.discworld.vitals:update(HP,maxHP,GP,maxGP,XP)
+  jippen.lib.ui.gauges:setLabeledGauge(&quot;jippen.discworld.vitals.HP&quot;,HP,maxHP,&quot;HP&quot;)
+  jippen.lib.ui.gauges:setLabeledGauge(&quot;jippen.discworld.vitals.GP&quot;,GP,maxGP,&quot;GP&quot;)
+  setGauge("jippen.discworld.vitals.XP",100,100,"  XP: " .. XP)
+end</script>
+                            <eventHandlerList/>
+                        </Script>
+                        <Script isActive="yes" isFolder="no">
+                            <name>:getGaugesCorner()</name>
+                            <packageName></packageName>
+                            <script>-------------------------------------------------------------------------------
+--      Do not modify this without knowing full well what you are doing      --
+-------------------------------------------------------------------------------
+
+--Get bar upper left corner
+function jippen.discworld.vitals:getGaugesCorner()
+  local w,h = getMainWindowSize()
+
+  --Set top or bottom
+  if jippen.discworld.vitals.location == &quot;top&quot; then
+    h = jippen.discworld.vitals.height
+  else
+     h = h - jippen.discworld.vitals.height
+  end
+
+  return w,h
+end
+
+
+
+</script>
+                            <eventHandlerList/>
+                        </Script>
+                        <Script isActive="yes" isFolder="no">
+                            <name>:createGauges()</name>
+                            <packageName></packageName>
+                            <script>-------------------------------------------------------------------------------
+--      Do not modify this without knowing full well what you are doing      --
+-------------------------------------------------------------------------------
+
+function jippen.discworld.vitals:createGauges()
+    local W, H = jippen.discworld.vitals:getGaugesCorner()
+  
+    --These just make the gauge creation cleaner
+    local spacer = jippen.discworld.vitals.spacer
+    local xpW    = jippen.discworld.vitals.xpbar
+    local barW   = ( (W - xpW) / 2) - spacer
+    local barH   = jippen.discworld.vitals.height
+  
+    --Create the gauges!
+    createGauge(&quot;jippen.discworld.vitals.HP&quot;, 
+                barW, barH, 0 , H, &quot;  HP: ??? / ???&quot;, 
+                jippen.discworld.vitals.HPcolor  )
+  
+    createGauge(&quot;jippen.discworld.vitals.GP&quot;, 
+  	             barW + spacer, barH, barW , H, &quot;  GP: ??? / ???&quot;,
+                jippen.discworld.vitals.GPcolor )
+  
+    createGauge(&quot;jippen.discworld.vitals.XP&quot;,
+                xpW , barH, W - xpW - spacer, H, &quot;  XP: ???&quot;,
+                jippen.discworld.vitals.XPcolor )
+  end</script>
+                            <eventHandlerList/>
+                        </Script>
+                        <Script isActive="yes" isFolder="no">
+                            <name>jippen_discworld_vitals_sysLoadEvent</name>
+                            <packageName></packageName>
+                            <script>-------------------------------------------------------------------------------
+--      Do not modify this without knowing full well what you are doing      --
+-------------------------------------------------------------------------------
+
+--Load the script when connecting to the mud
+function jippen_discworld_vitals_sysLoadEvent()
+  if jippen.discworld.vitals.enabled then
+    sendGMCP(&quot;core.supports.set \[\&quot;Char.Vitals\&quot;\]&quot;)
+    jippen.discworld.vitals:createGauges()
+  end
+end</script>
+                            <eventHandlerList>
+                                <string>sysLoadEvent</string>
+                            </eventHandlerList>
+                        </Script>
+                        <Script isActive="yes" isFolder="no">
+                            <name>jippen_discworld_vitals_gmcpCharVitals</name>
+                            <packageName></packageName>
+                            <script>-------------------------------------------------------------------------------
+--      Do not modify this without knowing full well what you are doing      --
+-------------------------------------------------------------------------------
+
+--Update via gmcp
+function jippen_discworld_vitals_gmcpCharVitals()
+  jippen.discworld.vitals:update(gmcp.Char.Vitals.hp,gmcp.Char.Vitals.maxhp,
+                                 gmcp.Char.Vitals.gp,gmcp.Char.Vitals.maxgp,
+                                 gmcp.Char.Vitals.xp)
+
+  local donothing = gmcp.Char.Vitals.burden   
+end</script>
+                            <eventHandlerList>
+                                <string>gmcp.Char.Vitals</string>
+                            </eventHandlerList>
+                        </Script>
+                        <Script isActive="yes" isFolder="no">
+                            <name>jippen_discworld_vitals_sysWindowResizeEvent</name>
+                            <packageName></packageName>
+                            <script>-------------------------------------------------------------------------------
+--      Do not modify this without knowing full well what you are doing      --
+-------------------------------------------------------------------------------
+
+--Move the gauges on window resize
+function jippen_discworld_vitals_sysWindowResizeEvent()
+  local W, H = jippen.discworld.vitals:getGaugesCorner()
+
+  --These just make the gauge creation cleaner
+  local spacer = jippen.discworld.vitals.spacer
+  local xpW    = jippen.discworld.vitals.xpbar - spacer
+  local barW   = ( (W - xpW) / 2) - spacer
+  local barH   = jippen.discworld.vitals.height
+  
+  createGauge(&quot;jippen.discworld.vitals.HP&quot;, 
+              barW - spacer, barH, 0 , H, &quot;  HP: ??? / ???&quot;, 
+              jippen.discworld.vitals.HPcolor  )
+
+  createGauge(&quot;jippen.discworld.vitals.GP&quot;, 
+				  barW - spacer, barH, barW , H, &quot;  GP: ??? / ???&quot;,
+				  jippen.discworld.vitals.GPcolor )
+
+  createGauge(&quot;jippen.discworld.vitals.XP&quot;,
+				  xpW , barH, W - xpW, H, &quot;  XP: ???&quot;,
+              jippen.discworld.vitals.XPcolor )
+
+  moveGauge(&quot;jippen.discworld.vitals.HP&quot;, 0   ,    H)
+  jippen.lib.ui.gauges:resizeGauge(&quot;jippen.discworld.vitals.HP&quot;, 0, barH)
+  moveGauge(&quot;jippen.discworld.vitals.GP&quot;, barW,    H)
+  jippen.lib.ui.gauges:resizeGauge(&quot;jippen.discworld.vitals.GP&quot;, barW, barH)
+  moveGauge(&quot;jippen.discworld.vitals.XP&quot;, W - xpW, H)
+  jippen.lib.ui.gauges:resizeGauge(&quot;jippen.discworld.vitals.XP&quot;, xpW, barH)
+
+end</script>
+                            <eventHandlerList>
+                                <string>sysWindowResizeEvent</string>
+                            </eventHandlerList>
+                        </Script>
+                    </ScriptGroup>
+                </ScriptGroup>
+            </ScriptGroup>
+            <ScriptGroup isActive="yes" isFolder="yes">
+                <name>lib</name>
+                <packageName></packageName>
+                <script>--Initilize stuff we will be using soonish.
+jippen = jippen or {}
+jippen.lib = jippen.lib or {}</script>
+                <eventHandlerList/>
+                <ScriptGroup isActive="yes" isFolder="yes">
+                    <name>ui</name>
+                    <packageName></packageName>
+                    <script>--Initilize stuff we will be using soonish.
+jippen = jippen or {}
+jippen.lib = jippen.lib or {}
+jippen.lib.ui = jippen.lib.ui or {}</script>
+                    <eventHandlerList/>
+                    <ScriptGroup isActive="yes" isFolder="yes">
+                        <name>gauges</name>
+                        <packageName></packageName>
+                        <script>--Initilize stuff we will be using soonish.
+jippen = jippen or {}
+jippen.lib = jippen.lib or {}
+jippen.lib.ui = jippen.lib.ui or {}
+jippen.lib.ui.gauges = jippen.lib.ui.gauges or {}</script>
+                        <eventHandlerList/>
+                        <Script isActive="yes" isFolder="no">
+                            <name>setGaugeStyleSheet</name>
+                            <packageName></packageName>
+                            <script>function jippen.lib.ui.gauges:setGaugeStyleSheet(gaugeName, css, cssback)
+if not setLabelStyleSheet then return end-- mudlet 1.0.5 and lower compatibility
+
+   for _,g in pairs(gaugesTable) do
+      if g.name == gaugeName then
+         setLabelStyleSheet(gaugeName, css)
+         setLabelStyleSheet(gaugeName .. &quot;_back&quot;, cssback or css)
+      end
+   end
+end</script>
+                            <eventHandlerList/>
+                        </Script>
+                        <Script isActive="yes" isFolder="no">
+                            <name>setGauge</name>
+                            <packageName></packageName>
+                            <script>--Auto-labels the gauges
+function jippen.lib.ui.gauges:setLabeledGauge(gaugeName,currentValue,maxValue,shortName)
+    local txt = &quot;  &quot; .. shortName .. &quot;: &quot; .. currentValue .. &quot; / &quot; .. maxValue
+    setGauge(gaugeName,currentValue,maxValue,txt)
+end</script>
+                            <eventHandlerList/>
+                        </Script>
+                        <Script isActive="yes" isFolder="no">
+                            <name>resizeGauge</name>
+                            <packageName></packageName>
+                            <script>--Resizes a gauge created by CreateGauge
+-- example: resizeGauge(&quot;healthbar&quot;, 150, 15)
+-- This would make the healthbar 150 pix wide by 15 pix tall
+function jippen.lib.ui.gauges:resizeGauge(gaugeName, width, height)
+   for _,g in pairs(gaugesTable) do
+      if g.name == gaugeName then
+         resizeWindow(gaugeName, width, height)
+         resizeWindow(gaugeName .. &quot;_back&quot;, width, height)
+      end
+   end
+end</script>
+                            <eventHandlerList/>
+                        </Script>
+                    </ScriptGroup>
+                </ScriptGroup>
+            </ScriptGroup>
+        </ScriptGroup>
+    </ScriptPackage>
+</MudletPackage>
