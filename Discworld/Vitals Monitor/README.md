@@ -1,5 +1,5 @@
-Discworld Bottomgraphs
-======================
+Vitals Monitor
+==============
 
 This is a fairly simple little script that adds graphs to the bottom of your mudlet window, updating your health, gp, and xp.
 
