@@ -1,7 +1,7 @@
-Mudlet Scripts
+Mudlet Plugins
 ==============
 
-This is where I keep all my Mudlet scripts. 
+This is where I keep all my Mudlet plugins. 
 
 The are organized by MUD I created them for.
 

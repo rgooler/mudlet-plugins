@@ -1,7 +1,7 @@
 Vitals Monitor
 ==============
 
-This is a fairly simple little script that adds graphs to the bottom of your mudlet window, updating your health, gp, and xp.
+This is a fairly simple little plugin that adds graphs to the bottom of your mudlet window, updating your health, gp, and xp.
 
 It also updates whenever you send input to the mud, to try to keep the graphs as accurate as possible.
 
